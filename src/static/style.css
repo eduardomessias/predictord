@@ -1,0 +1,49 @@
+h1 {
+    font-family: 'Open Sans Condensed', sans-serif;
+    background-color: greenyellow;
+    box-shadow: 10px 10px lightskyblue;
+    height: 48px;   
+    width: 98%;
+    font-size: 24pt; 
+}
+
+h2 {
+    font-family: 'Open Sans Condensed', sans-serif;
+    text-align: right;
+    color: #34495e;
+    background-color: #f1c40f;
+    width: max-content;
+    font-size: 16pt;
+}
+
+form {
+    background-color: lightskyblue;    
+    box-shadow: 10px 10px greenyellow;
+    padding: 8px;        
+}
+
+label, select, input {
+    font-family: 'Raleway', sans-serif;    
+}
+
+input[name=stock] {
+    font-size: large;
+}
+
+input[type=submit] {
+    background-color: greenyellow;    
+    border: none;
+    font-weight: bold;
+    font-size: larger;
+}
+
+table {
+    font-family: 'Raleway', sans-serif;    
+    font-size: 8pt;
+}
+
+thead {
+    font-family: 'Open Sans Condensed', sans-serif;
+    font-weight: bold;
+    font-size: 10pt;
+}
