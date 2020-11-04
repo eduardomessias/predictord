@@ -1,5 +1,5 @@
 # Predictord
-<<<<<<< HEAD
+HEAD
 Stock trading strategies using Python
 =======
 
@@ -30,4 +30,3 @@ The API [yfinance](https://pypi.org/project/yfinance/) is providing the stock in
     |- setup.py
     |- MANIFEST.in
     |- README.md
->>>>>>> 164b71f (initial commit)
