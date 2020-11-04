@@ -12,8 +12,15 @@ window.onload = () => {
             break
     }
 
+    persistCriteria(chartData.method, chartData.period)
     printRecommendationsTable(chartData.recommendations)
 }
+
+function persistCriteria(method, period) {
+    document.querySelector('#method').value = method
+    document.querySelector('#period').value = period
+}
+
 
 function printRecommendationsTable(tableHTML) {
     var divTable = document.querySelector('#div-table')
@@ -24,7 +31,8 @@ function printRecommendationsTable(tableHTML) {
     table.removeAttribute('border')
     table.classList.remove('dataframe')
     table.classList.add('table')
-    table.classList.add('table-hover')    
+    //TODO: Uncomment the line below once there's a link to the recommendations' sources article
+    //table.classList.add('table-hover')        
     
     var tableBody = table.getElementsByTagName('tbody')[0]
     var tableRows = tableBody.getElementsByTagName('tr')
@@ -73,8 +81,8 @@ function plotSmaChart() {
 function plotMacdChart() {
     var data = [
         chartData.history,
-        chartData.macd,
-        chartData.signal,
+        //chartData.macd,
+        //chartData.signal,
         chartData.bid,
         chartData.ask
     ]

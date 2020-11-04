@@ -18,14 +18,17 @@
                     <div class="form-group">
                         <label for="method">Method of analysis</label>
                         <select class="form-control border border-primary" id="method" name="method" required>
-                            <option value="sma" selected>SMA</option>
+                            <option value="">...</option>
+                            <option value="sma">SMA</option>
                             <option value="macd">MACD</option>
-                            <option value="sma+macd">SMA+MACD</option>
+                            <!-- TODO: Figure out how to print both graph in this case below -->
+                            <!-- <option value="sma+macd">SMA+MACD</option> -->
                         </select>
                     </div>
                     <div class="form-group">
                         <label for="period">Period of performance</label>
                         <select class="form-control  border border-primary" id="period" name="period" required>
+                            <option value"">...</option>
                             <option value="1d">1d</option>
                             <option value="5d">5d</option>
                             <option value="1mo">1mo</option>
@@ -35,7 +38,7 @@
                             <option value="2y">2y</option>
                             <option value="5y">5y</option>
                             <option value="10y">10y</option>
-                            <option value="ytd" selected>ytd</option>
+                            <option value="ytd">ytd</option>
                             <option value="max">max</option>
                         </select>
                     </div>

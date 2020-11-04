@@ -21,7 +21,25 @@ def index():
         flash(error)
     return render_template(template)    
 
-def buy_sell(data, method="sma"):
+def buy_sell_macd(data):
+    import numpy as np
+    bid = []
+    ask = []
+    flag = -1
+    for i in range(len(data)):
+        b = np.nan
+        a = np.nan
+        if data['MACD'][i] > data['Signal'][i] and flag != 1:
+            b = data['Close'][i]
+            flag = 1
+        if data['MACD'][i] < data['Signal'][i] and flag != 0:
+            a = data['Close'][i]
+            flag = 0
+        bid.append(b)
+        ask.append(a)
+    return (bid, ask)
+
+def buy_sell_sma(data):
     import numpy as np
     bid = []
     ask = []
@@ -29,23 +47,21 @@ def buy_sell(data, method="sma"):
     for i in range(len(data)):
         b = np.nan
         a = np.nan
-        if method == "sma":
-            if data['SMA30'][i] > data['SMA100'][i] and flag != 1:
-                b = data['Close'][i]
-                flag = 1
-            if data['SMA30'][i] < data['SMA100'][i] and flag != 0:
-                a = data['Close'][i]
-                flag = 0
-        if method == "macd":
-            if data['MACD'][i] > data['Signal'][i] and flag != 1:
-                b = data['Close'][i]
-                flag = 1
-            if data['MACD'][i] < data['Signal'][i] and flag != 0:
-                a = data['Close'][i]
-                flag = 0
+        if data['SMA30'][i] > data['SMA100'][i] and flag != 1:
+            b = data['Close'][i]
+            flag = 1
+        if data['SMA30'][i] < data['SMA100'][i] and flag != 0:
+            a = data['Close'][i]
+            flag = 0
         bid.append(b)
         ask.append(a)
     return (bid, ask)
+
+def buy_sell(data, method):
+    if method == "sma":
+        return buy_sell_sma(data)
+    if method == "macd":
+        return buy_sell_macd(data)    
 
 def get_sma(stock_history):
     import pandas as pd
@@ -74,11 +90,11 @@ def get_stock_info(stock, period, method):
     stock_period = period
     ticker = yf.Ticker(stock_name)
     stock_history = ticker.history(period=stock_period)
-    if "sma" in method:
+    if method == "sma":
         sma = get_sma(stock_history)
         stock_history['SMA30'] = sma['SMA30']
         stock_history['SMA100'] = sma['SMA100']
-    if "macd" in method:
+    if method == "macd":
         macd = get_macd(stock_history)
         stock_history['MACD'] = macd['MACD']
         stock_history['Signal'] = macd['Signal']
@@ -169,11 +185,11 @@ def get_chart_data_for_layout(stock_company, method):
     layout = {}
     layout['title'] = '{} closing price history w/ BID & ASK signals {}-based'.format(stock_company, method)
     layout['font'] = {}
-    layout['font']['family'] = 'Raleway, sans-serif'
+    layout['font']['family'] = 'Ubuntu'
     layout['font']['size'] = 18    
     return layout
 
-def create_data(stock, period='5y', method='sma'):
+def create_data(stock,period,method):
     import plotly
     import json  
     stock_info = get_stock_info(stock, period, method)
