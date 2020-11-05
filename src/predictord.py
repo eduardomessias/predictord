@@ -16,8 +16,13 @@ def index():
         if not stock:
             error = 'Stock not informed.'
         if error is None:
-            data=create_data(stock,period,method)
-            return render_template(template, chart_data=data)
+            try:
+                data=create_data(stock,period,method)
+                return render_template(template, chart_data=data)
+            except KeyError as key_error:
+                error = key_error
+            except Exception:
+                error = 'Something went wrong this time. Try another one, please.'
         flash(error)
     return render_template(template)    
 
@@ -88,24 +93,27 @@ def get_stock_info(stock, period, method):
     import yfinance as yf
     stock_name = stock
     stock_period = period
-    ticker = yf.Ticker(stock_name)
-    stock_history = ticker.history(period=stock_period)
-    if method == "sma":
-        sma = get_sma(stock_history)
-        stock_history['SMA30'] = sma['SMA30']
-        stock_history['SMA100'] = sma['SMA100']
-    if method == "macd":
-        macd = get_macd(stock_history)
-        stock_history['MACD'] = macd['MACD']
-        stock_history['Signal'] = macd['Signal']
-    bs = buy_sell(stock_history, method)
-    stock_history['BID'] = bs[0]
-    stock_history['ASK'] = bs[1]
-    info = {}
-    info['company'] = ticker.info['longName']
-    info['history'] = stock_history
-    info['recommendations'] = ticker.recommendations.tail().to_html()
-    return info
+    try:
+        ticker = yf.Ticker(stock_name)
+        stock_history = ticker.history(period=stock_period)
+        if method == "sma":
+            sma = get_sma(stock_history)
+            stock_history['SMA30'] = sma['SMA30']
+            stock_history['SMA100'] = sma['SMA100']
+        if method == "macd":
+            macd = get_macd(stock_history)
+            stock_history['MACD'] = macd['MACD']
+            stock_history['Signal'] = macd['Signal']
+        bs = buy_sell(stock_history, method)
+        stock_history['BID'] = bs[0]
+        stock_history['ASK'] = bs[1]
+        info = {}
+        info['company'] = ticker.info['longName']
+        info['history'] = stock_history
+        info['recommendations'] = ticker.recommendations.tail().to_html()
+        return info
+    except KeyError as e:
+        raise KeyError('Invalid criteria. Try another stock')
 
 def get_chart_data_for_history(stock_history):
     history = {}

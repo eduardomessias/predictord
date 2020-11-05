@@ -44,14 +44,21 @@
                     </div>
                     <div class="form-group">
                         <label for="stock">Stock</label>
-                        <input class="form-control border border-primary" name="stock" id="stock" value="{{ request.form['stock'] }}" required autofocus>
+                        <input class="form-control border border-primary" name="stock" id="stock" value="{{ request.form['stock'] }}" placeholder="e.g: AMD, AAPL, MSFT" required autofocus>
                     </div>
                     <div class="text-right">
                         <input type="submit" value="Submit" class="btn">
                     </div>
                 </form>
-            </div>
+            </div>            
             <div id="div-table" class="col-md-8">
+                {% for message in get_flashed_messages() %}
+                    <div class="row">
+                        <div id="div-form" class="col-md-8 alert-danger">        
+                            {{ message }}
+                        </div>
+                    </div>
+                {% endfor %}
             </div>
         </div>
         <div class="row">
