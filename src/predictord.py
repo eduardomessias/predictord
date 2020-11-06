@@ -5,7 +5,8 @@ from werkzeug.exceptions import abort
 
 bp = Blueprint('stock_tool', __name__)
 
-@bp.route('/', methods=('GET','POST'))
+
+@bp.route('/', methods=('GET', 'POST'))
 def index():
     template = 'predictord/index.html'
     error = None
@@ -17,14 +18,17 @@ def index():
             error = 'Stock not informed.'
         if error is None:
             try:
-                data=create_data(stock,period,method)
+                data = create_data(stock, period, method)
                 return render_template(template, chart_data=data)
-            except KeyError as key_error:
-                error = key_error
+            except KeyError:
+                error = 'Invalid criteria. '\
+                        'Try another stock.'
             except Exception:
-                error = 'Something went wrong this time. Try another one, please.'
+                error = 'Something went wrong this time. '\
+                        'Try again, please.'
         flash(error)
-    return render_template(template)    
+    return render_template(template)
+
 
 def buy_sell_macd(data):
     import numpy as np
@@ -44,11 +48,12 @@ def buy_sell_macd(data):
         ask.append(a)
     return (bid, ask)
 
+
 def buy_sell_sma(data):
     import numpy as np
     bid = []
     ask = []
-    flag = -1    
+    flag = -1
     for i in range(len(data)):
         b = np.nan
         a = np.nan
@@ -62,11 +67,13 @@ def buy_sell_sma(data):
         ask.append(a)
     return (bid, ask)
 
+
 def buy_sell(data, method):
     if method == "sma":
         return buy_sell_sma(data)
     if method == "macd":
-        return buy_sell_macd(data)    
+        return buy_sell_macd(data)
+
 
 def get_sma(stock_history):
     import pandas as pd
@@ -79,15 +86,17 @@ def get_sma(stock_history):
     data['SMA100'] = sma100['Close']
     return data
 
+
 def get_macd(stock_history):
-    short_ema = stock_history.Close.ewm(span=12,adjust=False).mean()
-    long_ema = stock_history.Close.ewm(span=26,adjust=False).mean()
+    short_ema = stock_history.Close.ewm(span=12, adjust=False).mean()
+    long_ema = stock_history.Close.ewm(span=26, adjust=False).mean()
     macd = short_ema - long_ema
-    signal = macd.ewm(span=9,adjust=False).mean()
+    signal = macd.ewm(span=9, adjust=False).mean()
     data = {}
     data['MACD'] = macd
     data['Signal'] = signal
     return data
+
 
 def get_stock_info(stock, period, method):
     import yfinance as yf
@@ -113,7 +122,8 @@ def get_stock_info(stock, period, method):
         info['recommendations'] = ticker.recommendations.tail().to_html()
         return info
     except KeyError as e:
-        raise KeyError('Invalid criteria. Try another stock')
+        raise e
+
 
 def get_chart_data_for_history(stock_history):
     history = {}
@@ -123,6 +133,7 @@ def get_chart_data_for_history(stock_history):
     history['name'] = 'Closing price'
     return history
 
+
 def get_chart_data_for_sma30(stock_history):
     sma30 = {}
     sma30['x'] = stock_history.index.to_list()
@@ -130,6 +141,7 @@ def get_chart_data_for_sma30(stock_history):
     sma30['type'] = 'scatter'
     sma30['name'] = 'SMA30'
     return sma30
+
 
 def get_chart_data_for_sma100(stock_history):
     sma100 = {}
@@ -139,6 +151,7 @@ def get_chart_data_for_sma100(stock_history):
     sma100['name'] = 'SMA100'
     return sma100
 
+
 def get_chart_data_for_macd(stock_history):
     macd = {}
     macd['x'] = stock_history.index.to_list()
@@ -146,6 +159,7 @@ def get_chart_data_for_macd(stock_history):
     macd['type'] = 'scatter'
     macd['name'] = 'MACD'
     return macd
+
 
 def get_chart_data_for_signal(stock_history):
     signal = {}
@@ -155,12 +169,14 @@ def get_chart_data_for_signal(stock_history):
     signal['name'] = 'Signal'
     return signal
 
+
 def get_bid_marker():
-    bid_marker = {}    
+    bid_marker = {}
     bid_marker['color'] = 'green'
     bid_marker['symbol'] = 'triangle-up'
     bid_marker['size'] = 10
     return bid_marker
+
 
 def get_chart_data_for_bid(stock_history):
     bid = {}
@@ -172,12 +188,14 @@ def get_chart_data_for_bid(stock_history):
     bid['marker'] = get_bid_marker()
     return bid
 
+
 def get_ask_marker():
     ask_marker = {}
     ask_marker['color'] = 'orange'
     ask_marker['symbol'] = 'triangle-down'
     ask_marker['size'] = 10
     return ask_marker
+
 
 def get_chart_data_for_ask(stock_history):
     ask = {}
@@ -189,25 +207,28 @@ def get_chart_data_for_ask(stock_history):
     ask['marker'] = get_ask_marker()
     return ask
 
+
 def get_chart_data_for_layout(stock_company, method):
     layout = {}
-    layout['title'] = '{} closing price history w/ BID & ASK signals {}-based'.format(stock_company, method)
+    layout['title'] = '{} closing price history'\
+        'w/ BID & ASK signals {}-based'.format(stock_company, method)
     layout['font'] = {}
     layout['font']['family'] = 'Ubuntu'
-    layout['font']['size'] = 18    
+    layout['font']['size'] = 18
     return layout
 
-def create_data(stock,period,method):
+
+def create_data(stock, period, method):
     import plotly
-    import json  
+    import json
     stock_info = get_stock_info(stock, period, method)
-    chart_data = {}    
+    chart_data = {}
     chart_data['company'] = stock_info['company']
     chart_data['stock'] = stock
     chart_data['period'] = period
     chart_data['method'] = method
     chart_data['recommendations'] = stock_info['recommendations']
-    chart_data['history'] = get_chart_data_for_history(stock_info['history'])    
+    chart_data['history'] = get_chart_data_for_history(stock_info['history'])
     if 'sma' in method:
         chart_data['sma30'] = get_chart_data_for_sma30(stock_info['history'])
         chart_data['sma100'] = get_chart_data_for_sma100(stock_info['history'])
@@ -216,7 +237,6 @@ def create_data(stock,period,method):
         chart_data['signal'] = get_chart_data_for_signal(stock_info['history'])
     chart_data['bid'] = get_chart_data_for_bid(stock_info['history'])
     chart_data['ask'] = get_chart_data_for_ask(stock_info['history'])
-    chart_data['layout'] = get_chart_data_for_layout(stock_info['company'], chart_data['method'])
+    chart_data['layout'] = get_chart_data_for_layout(stock_info['company'],
+                                                     chart_data['method'])
     return json.dumps(chart_data, cls=plotly.utils.PlotlyJSONEncoder)
-
-

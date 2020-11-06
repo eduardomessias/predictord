@@ -1,0 +1,3 @@
+graft predictord/static
+graft predictord/templates
+global-exclude *.pyc
