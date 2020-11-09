@@ -29,3 +29,31 @@ The API [yfinance](https://pypi.org/project/yfinance/) is providing the stock in
     |- setup.py
     |- MANIFEST.in
     |- README.md
+
+## Requirements
+
+- Python 3.8
+    - pip  
+    - virtualenv
+
+## How to run
+
+1. Clone or download the main branch in this repo.
+    1.1 If you download, unzip the downloaded file right after.
+2. In a terminal app, change directory to the predictord downloaded folder.
+```
+$ cd predictord
+```
+3. Activate the virtual environment
+```
+$ . venv/bin/activate
+```
+4. Set FLASK_APP and FLASK_ENV variables
+```
+$ export FLASK_APP=src
+$ export FLASK_ENV=development
+```
+6. Run the application
+```
+$ flask run
+```
