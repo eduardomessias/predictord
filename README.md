@@ -39,7 +39,7 @@ The API [yfinance](https://pypi.org/project/yfinance/) is providing the stock in
 ## How to run
 
 1. Clone or download the main branch in this repo.
-    1.1 If you download, unzip the downloaded file right after.
+    - If you download, unzip the downloaded file right after.
 2. In a terminal app, change directory to the predictord downloaded folder.
 ```
 $ cd predictord
