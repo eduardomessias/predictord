@@ -48,7 +48,7 @@ $ cd predictord
 ```
 $ . venv/bin/activate
 ```
-4. Set FLASK_APP and FLASK_ENV variables
+4. Set **FLASK_APP** and **FLASK_ENV** variables
 ```
 $ export FLASK_APP=src
 $ export FLASK_ENV=development
