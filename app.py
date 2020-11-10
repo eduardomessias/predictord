@@ -20,8 +20,12 @@ def index():
         stock = request.form['stock']
         method = request.form['method']
         period = request.form['period']
+        if not method:
+            error = 'Method not informed.'
+        if not period:
+            error = 'Period not informed.'
         if not stock:
-            error = 'Stock not informed.'
+            error = 'Stock not informed.'        
         if error is None:
             try:
                 data = create_data(stock, period, method)
