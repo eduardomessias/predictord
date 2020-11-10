@@ -1,3 +1,0 @@
-graft src/static
-graft src/templates
-global-exclude *.pyc

@@ -1,14 +1,20 @@
-from flask import (
-    Blueprint, flash, g, redirect, render_template, request, url_for, jsonify
-)
+from flask import Flask
+from flask import render_template
+from flask import url_for
+from flask import jsonify
+from flask import flash
+from flask import g
+from flask import redirect
+from flask import request
 from werkzeug.exceptions import abort
 
-bp = Blueprint('stock_tool', __name__)
+
+app = Flask(__name__)
 
 
-@bp.route('/', methods=('GET', 'POST'))
+@app.route('/', methods=('GET', 'POST'))
 def index():
-    template = 'predictord/index.html'
+    template = 'index.html'
     error = None
     if request.method == 'POST':
         stock = request.form['stock']
@@ -240,3 +246,8 @@ def create_data(stock, period, method):
     chart_data['layout'] = get_chart_data_for_layout(stock_info['company'],
                                                      chart_data['method'])
     return json.dumps(chart_data, cls=plotly.utils.PlotlyJSONEncoder)
+
+
+if __name__ == "__main__":
+    app.run(host='0.0.0.0', port=80)
+

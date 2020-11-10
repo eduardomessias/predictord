@@ -15,17 +15,10 @@ The API [yfinance](https://pypi.org/project/yfinance/) is providing the stock in
 
 ## Project layout
     predictord
-    |- instance/
-    |- src/
-        |- static/
-            |- style.css
-        |- templates/
-            |- predictord/
-            |   |- index.html
-            |- base.html
-        |- __init__.py
-        |- predictord.py
-    |- venv/
-    |- setup.py
-    |- MANIFEST.in
+    |- app.py
     |- README.md
+    |- static/
+        |- style.css
+    |- templates/
+        |- index.html
+    |- venv/
